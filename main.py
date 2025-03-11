@@ -1,4 +1,5 @@
 import datetime
+import os
 
 
 #Clase libro, con los atributos que conforman la información básica de un libro
@@ -32,20 +33,18 @@ class Libro:
 
 #Clase usuario con los atributos que lo identifican
 class Usuario:
-  def __init__(self, id_usuario, nombre, correo):
-    self.id_usuario = id_usuario
+
+  def __init__(self, nombre, correo):
     self.nombre = nombre
     self.correo = correo
     self.libros_prestados = [
     ]  #Una lista para poder guardar más de un libro prestado
 
 
-
 #Clase para identificar al bibliotecario, quien se encargara de añadir, eliminar y buscar libros
 class Bibliotecario:
 
-  def __init__(self, id_bibliotecario, nombre):
-    self.id_bibliotecario = id_bibliotecario
+  def __init__(self, nombre):
     self.nombre = nombre
 
   def annadir_libro(self, biblioteca, libro):
@@ -60,13 +59,10 @@ class Bibliotecario:
   def buscar_libro(self, biblioteca, titulo):
     for i in biblioteca.libros:
       if i.nombre.lower() == titulo.lower():
-        print(
-            f"El libro {i.nombre} de {i.autor} se encuentra en la biblioteca")
+        print(f"El libro {i.nombre} de {i.autor} se encuentra en la biblioteca")
         return i
-       
-      
+
     print(f"El libro {titulo} no se encuentra en la biblioteca")
-      
 
 
 #Clase biblioteca, que sera la clase que guarde el repertorio de libros, registro de usuarios, aliminacion y listado de los mismos
@@ -77,7 +73,7 @@ class Biblioteca:
     self.usuarios = []
     self.prestamos = []
 
-  def registrar_usuarios(self,  usuario):
+  def registrar_usuarios(self, usuario):
     self.usuarios.append(usuario)
     print(f"El usuario {usuario.nombre} ha sido registrado en la biblioteca")
 
@@ -106,107 +102,205 @@ class Prestamo:
     self.fecha_prestamo = 0
     self.fecha_devolucion = 0
 
-
-  
   def prestar_libro(self, usuario, libro):
     if libro.disponibilidad:
       libro.disponible(False)
       usuario.libros_prestados.append(libro)
       self.fecha_prestamo = datetime.datetime.now()
-      self.fecha_devolucion = datetime.datetime.now() + datetime.timedelta(days=7)
-      print(f"El libro {libro.nombre} ha sido prestado al usuario {usuario.nombre} el día {self.fecha_prestamo}, se espera su devolución antes del día {self.fecha_devolucion}")
+      self.fecha_devolucion = datetime.datetime.now() + datetime.timedelta(
+          days=7)
+      print(
+          f"El libro {libro.nombre} ha sido prestado al usuario {usuario.nombre} el día {self.fecha_prestamo}, se espera su devolución antes del día {self.fecha_devolucion}"
+      )
     else:
       print(f"El libro {libro.nombre} no esta disponible para prestar")
-  
 
-  def devolver_libro(self, usuario,libro):
+  def devolver_libro(self, usuario, libro):
     if libro in usuario.libros_prestados:
       usuario.libros_prestados.remove(libro)
       libro.disponible(True)
-      print(f"El usuario {usuario.nombre} ha devuelto el libro {libro.nombre} el día {self.fecha_devolucion}")
-
+      print(
+          f"El usuario {usuario.nombre} ha devuelto el libro {libro.nombre} el día {self.fecha_devolucion}"
+      )
 
   def info_prestamo(self, usuario):
     if usuario.libros_prestados:
-      print(f"Usuario: {usuario.nombre} tienes los siguientes libros prestados:\n")
+      print(
+          f"Usuario: {usuario.nombre} tienes los siguientes libros prestados:\n"
+      )
       for libro in usuario.libros_prestados:
         libro.mostrar_info()
     else:
       print(f"El usuario {usuario.nombre} no tiene libros prestados")
 
 
-
-#######################################################################################
-#Pruebas de ejecución
-
-# Crear instancias de libros
-libro1 = Libro("Python para principiantes", "Juan Pérez", "123456789", 2022, "Editorial ABC")
-libro2 = Libro("Aprendiendo Django", "Ana Gómez", "987654321", 2021, "Editorial XYZ")
-
-# Crear instancia de un usuario
-usuario1 = Usuario(1, "Carlos Sánchez", "carlos.sanchez@example.com")
-usuario2 = Usuario(2, "Laura García", "laura.garcia@example.com")
-
-# Crear instancia de bibliotecario
-bibliotecario = Bibliotecario(1, "Elena Martínez")
-
-# Crear instancia de biblioteca
-biblioteca = Biblioteca()
-
-# Registrar usuarios en la biblioteca
-print("\nProbando el registro de usuarios:")
-biblioteca.registrar_usuarios(usuario1)
-biblioteca.registrar_usuarios(usuario2)
-
-# Añadir libros a la biblioteca
-print("\nProbando la inserción de libros a la biblioteca:")
-bibliotecario.annadir_libro(biblioteca, libro1)
-bibliotecario.annadir_libro(biblioteca, libro2)
-
-# Listar libros disponibles en la biblioteca
-print("\nProbando la lista de libros disponibles en la biblioteca:")
-biblioteca.listar_libros()
-
-# Listar usuarios registrados
-print("\nProbando la lista de usuarios registrados:")
-biblioteca.listar_usuarios()
-
-# Crear instancia de préstamo
-prestamo = Prestamo()
-
-# Prestar libros a los usuarios
-print("\nProbando el préstamo de libros:")
-prestamo.prestar_libro(usuario1, libro1)  # Prestar "Python para principiantes" a usuario1
-print()
-print()
-prestamo.prestar_libro(usuario2, libro2)  # Prestar "Aprendiendo Django" a usuario2
-print()
-print()
-prestamo.prestar_libro(usuario1, libro2)
+def limpiar_pantalla():
+  os.system('cls' if os.name == 'nt' else 'clear')
 
 
-# Ver información de los libros prestados por usuario1
-print("\nProbando la visualización de los libros prestados por el usuario 1:")
-prestamo.info_prestamo(usuario1)
-print()
-print()
-# Ver información de los libros prestados por usuario2
-print("\nProbando la visualización de los libros prestados por el usuario 2:")
-prestamo.info_prestamo(usuario2)
+def mostrar_menu():
+  print("\n--- MENÚ PRINCIPAL ---")
+  print("1. Registrar Usuario")
+  print("2. Eliminar Usuario")
+  print("3. Listar Usuarios")
+  print("4. Añadir Libro")
+  print("5. Eliminar Libro")
+  print("6. Listar Libros")
+  print("7. Buscar Libro")
+  print("8. Prestar Libro")
+  print("9. Devolver Libro")
+  print("10. Ver Préstamos de un Usuario")
+  print("0. Salir")
+  print("-----------------------")
 
-# Devolver libros
-print("\nProbando la devolución de libros:")
-prestamo.devolver_libro(usuario1, libro1)  # Devolver "Python para principiantes"
-print()
-print()
-prestamo.devolver_libro(usuario2, libro2)  # Devolver "Aprendiendo Django"
-print()
-print()
-# Ver información después de la devolución
-print("\nProbando la visualización de los libros prestados después de la devolución:")
-prestamo.info_prestamo(usuario1)
-prestamo.info_prestamo(usuario2)
 
-# Listar libros después de las devoluciones
-print("\nProbando la lista de libros disponibles después de la devolución:")
-biblioteca.listar_libros()
+def ejecutar_menu(biblioteca, prestamo,bibliotecario):
+  while True:
+    mostrar_menu()
+    opcion = input("Elige una opción: ")
+
+    if opcion == '1':
+      limpiar_pantalla()
+      nombre = input("Ingresa el nombre del usuario: ")
+      correo = input("Ingresa el correo del usuario: ")
+      usuario_nuevo = Usuario(nombre, correo)
+      biblioteca.registrar_usuarios(usuario_nuevo)
+
+    elif opcion == '2':
+      limpiar_pantalla()
+      nombre = input("Ingresa el nombre del usuario a eliminar: ")
+      usuario_eliminar = None
+
+      #Se busca el usuario en la lista de usuarios por el nombre
+      for usuario in biblioteca.usuarios:
+        if usuario.nombre == nombre:
+          usuario_eliminar = usuario  #Si se encuentra el usuario se guarda en la variable usuario_eliminar
+          break
+
+      #Si el usuario existe se elimina de la lista de usuarios, en caso contrario que no se haya encontrado el usuario en le for
+      #se muestra un mensaje de error
+      if usuario_eliminar:
+        biblioteca.eliminar_usuario(usuario_eliminar)
+      else:
+        print("El usuario no existe en la biblioteca")
+
+    elif opcion == '3':
+      limpiar_pantalla()
+      biblioteca.listar_usuarios()
+
+    elif opcion == '4':
+      limpiar_pantalla()
+      nombre = input("Ingresa el nombre del libro: ")
+      autor = input("Ingresa el autor del libro: ")
+      #Para el ISBN verificamos que la entrada sea de un tamaño de 13 caracteres
+      isbn = input("Ingresa el ISBN del libro: ")
+      if len(isbn) != 13:
+        print("El ISBN debe tener 13 dígitos")
+        continue
+
+      #De igual manera verificamos que el año sea de 4 dígitos
+      anno = input("Ingresa el año de publicación del libro: ")
+      if len(anno) != 4:
+        print("El año debe tener 4 dígitos")
+        continue
+
+      editorial = input("Ingresa la editorial del libro: ")
+      libro_nuevo = Libro(nombre, autor, isbn, anno, editorial)
+      bibliotecario.annadir_libro(biblioteca, libro_nuevo)
+
+    elif opcion == '5':
+      limpiar_pantalla()
+      nombre = input("Ingresa el nombre del libro a eliminar: ")
+      libro_eliminar = None
+
+      #Se busca el libro en la lista de libros por el nombre
+      for libro in biblioteca.libros:
+        if libro.nombre == nombre:
+          libro_eliminar = libro  #Si se encuentra el libro se guarda en la variable libro_eliminar
+          break
+
+      if libro_eliminar:
+        biblioteca.eliminar_libro(libro_eliminar)
+
+      else:
+        print("El libro no existe en la biblioteca")
+
+    elif opcion == '6':
+      limpiar_pantalla()
+      biblioteca.listar_libros() 
+
+    
+    elif opcion == '7':
+      limpiar_pantalla()
+      titulo = input("Ingresa el título del libro a buscar: ")
+      bibliotecario.buscar_libro(biblioteca,titulo)
+
+    elif opcion == '8':
+      limpiar_pantalla()
+      nombre = input("Ingresa el nombre del usuario: ")
+      usuario_prestamo = None
+
+      #Se busca el usuario en la lista de usuarios por el nombre
+      for usuario in biblioteca.usuarios:
+        if usuario.nombre == nombre:
+          usuario_prestamo = usuario  #Si se encuentra el usuario se guarda en la variable usuario_prestamo
+          break  
+
+      #Si el usuario existe se presta el libro, verificamos tambien la existencia del libro, si ambos son verdaderos se presta el libro
+      if usuario_prestamo:
+        libro = input("Ingresa el nombre del libro a prestar: ")
+        print("\n")
+        if bibliotecario.buscar_libro(biblioteca,libro):
+          prestamo.prestar_libro(usuario_prestamo, bibliotecario.buscar_libro(biblioteca,libro))
+        else:
+          print(f"El libro {libro} no existe en la biblioteca")
+      
+
+    elif opcion == '9':
+      limpiar_pantalla()
+      nombre = input("Ingresa el nombre del usuario: ")
+      usuario_devolucion = None
+      #Se busca el usuario en la lista de usuarios por el nombre
+      for usuario in biblioteca.usuarios:
+        if usuario.nombre == nombre:
+          usuario_devolucion = usuario  #Si se encuentra el usuario se guarda en la variable usuario_devolucion
+          break
+      #Si el usuario existe se devuelve el libro
+      libro = input("Ingresa el nombre del libro a devolver: ")
+      print("\n")
+      if bibliotecario.buscar_libro(biblioteca,libro):
+        prestamo.devolver_libro(usuario_devolucion, bibliotecario.buscar_libro(biblioteca,libro))
+      
+      
+    elif opcion == '10':
+      limpiar_pantalla()
+      nombre = input("Ingresa el nombre del usuario: ")
+      usuario_prestamo = None
+      #Se busca el usuario en la lista de usuarios por el nombre
+      for usuario in biblioteca.usuarios:
+        if usuario.nombre == nombre:
+          usuario_prestamo = usuario  #Si se encuentra el usuario se guarda en la variable usuario_prestamo
+          break
+
+      #Si el usuario existe se muestra la información de los libros prestados
+      if usuario_prestamo:
+        prestamo.info_prestamo(usuario_prestamo)
+      break
+
+
+    elif opcion == '0':
+      print("¡Hasta luego!")
+      break
+    else:
+      print("Opción no válida, por favor elige una opción entre 0 y 10.")
+
+
+def main():
+  biblioteca = Biblioteca()
+  prestamo = Prestamo()
+  bibliotecario = Bibliotecario("Maure TM")
+  ejecutar_menu(biblioteca, prestamo, bibliotecario)
+
+
+if __name__ == "__main__":
+  main()
