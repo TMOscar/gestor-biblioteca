@@ -28,7 +28,7 @@ class Libro:
       estado = "Disponible"
     else:
       estado = "No disponible"
-    print(f"Por ahora el libro {self.nombre} esta {estado} en la biblioteca")
+    print(f"\nPor ahora el libro {self.nombre} se encuentra {estado} en la biblioteca\n")
 
 
 #Clase usuario con los atributos que lo identifican
@@ -149,7 +149,7 @@ def mostrar_menu():
   print("7. Buscar Libro")
   print("8. Prestar Libro")
   print("9. Devolver Libro")
-  print("10. Ver Préstamos de un Usuario")
+  print("10. Ver Préstamos de un usuario")
   print("0. Salir")
   print("-----------------------")
 
@@ -157,16 +157,18 @@ def mostrar_menu():
 def ejecutar_menu(biblioteca, prestamo,bibliotecario):
   while True:
     mostrar_menu()
-    opcion = input("Elige una opción: ")
+    opcion = int(input("Elige una opción: "))
 
-    if opcion == '1':
+    if opcion == 1:
       limpiar_pantalla()
       nombre = input("Ingresa el nombre del usuario: ")
       correo = input("Ingresa el correo del usuario: ")
       usuario_nuevo = Usuario(nombre, correo)
       biblioteca.registrar_usuarios(usuario_nuevo)
 
-    elif opcion == '2':
+    
+
+    elif opcion == 2:
       limpiar_pantalla()
       nombre = input("Ingresa el nombre del usuario a eliminar: ")
       usuario_eliminar = None
@@ -184,11 +186,11 @@ def ejecutar_menu(biblioteca, prestamo,bibliotecario):
       else:
         print("El usuario no existe en la biblioteca")
 
-    elif opcion == '3':
+    elif opcion == 3:
       limpiar_pantalla()
       biblioteca.listar_usuarios()
 
-    elif opcion == '4':
+    elif opcion == 4:
       limpiar_pantalla()
       nombre = input("Ingresa el nombre del libro: ")
       autor = input("Ingresa el autor del libro: ")
@@ -208,7 +210,7 @@ def ejecutar_menu(biblioteca, prestamo,bibliotecario):
       libro_nuevo = Libro(nombre, autor, isbn, anno, editorial)
       bibliotecario.annadir_libro(biblioteca, libro_nuevo)
 
-    elif opcion == '5':
+    elif opcion == 5:
       limpiar_pantalla()
       nombre = input("Ingresa el nombre del libro a eliminar: ")
       libro_eliminar = None
@@ -225,17 +227,17 @@ def ejecutar_menu(biblioteca, prestamo,bibliotecario):
       else:
         print("El libro no existe en la biblioteca")
 
-    elif opcion == '6':
+    elif opcion == 6:
       limpiar_pantalla()
       biblioteca.listar_libros() 
 
-    
-    elif opcion == '7':
+
+    elif opcion == 7:
       limpiar_pantalla()
       titulo = input("Ingresa el título del libro a buscar: ")
       bibliotecario.buscar_libro(biblioteca,titulo)
 
-    elif opcion == '8':
+    elif opcion == 8:
       limpiar_pantalla()
       nombre = input("Ingresa el nombre del usuario: ")
       usuario_prestamo = None
@@ -254,9 +256,9 @@ def ejecutar_menu(biblioteca, prestamo,bibliotecario):
           prestamo.prestar_libro(usuario_prestamo, bibliotecario.buscar_libro(biblioteca,libro))
         else:
           print(f"El libro {libro} no existe en la biblioteca")
-      
 
-    elif opcion == '9':
+
+    elif opcion == 9:
       limpiar_pantalla()
       nombre = input("Ingresa el nombre del usuario: ")
       usuario_devolucion = None
@@ -270,25 +272,26 @@ def ejecutar_menu(biblioteca, prestamo,bibliotecario):
       print("\n")
       if bibliotecario.buscar_libro(biblioteca,libro):
         prestamo.devolver_libro(usuario_devolucion, bibliotecario.buscar_libro(biblioteca,libro))
-      
-      
-    elif opcion == '10':
+
+
+    elif opcion == 10:
       limpiar_pantalla()
       nombre = input("Ingresa el nombre del usuario: ")
       usuario_prestamo = None
-      #Se busca el usuario en la lista de usuarios por el nombre
+      # Buscar usuario en la lista de usuarios
       for usuario in biblioteca.usuarios:
-        if usuario.nombre == nombre:
-          usuario_prestamo = usuario  #Si se encuentra el usuario se guarda en la variable usuario_prestamo
-          break
+          if usuario.nombre == nombre:
+              usuario_prestamo = usuario  # Se guarda el objeto usuario
+              break  # Se detiene la búsqueda al encontrar el usuario
 
-      #Si el usuario existe se muestra la información de los libros prestados
+      # Mostrar información si el usuario existe
       if usuario_prestamo:
-        prestamo.info_prestamo(usuario_prestamo)
-      break
+          prestamo.info_prestamo(usuario_prestamo)
+      else:
+          print(f"El usuario {nombre} no existe en la biblioteca")
 
 
-    elif opcion == '0':
+    elif opcion == 0 :
       print("¡Hasta luego!")
       break
     else:
